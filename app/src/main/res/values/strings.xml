@@ -1,6 +1,27 @@
 <resources>
     <string name="app_name">EXPENSIFY</string>
     <string name="app_logo">Money Manager Logo</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="back_button_description">Back</string>
+    <string name="income_greeting">Income!</string>
+    <string name="amount_hint">Amount (LKR)</string>
+    <string name="date_hint">Date</string>
+    <string name="description_hint">Description</string>
+    <string name="submit_button">Submit</string>
+    <string name="recent_income_title">Recent Income (Last 3 Days)</string>
+    <string name="transactions_title">All Transactions</string>
+    <string name="category_or_reason_hint">Category or Reason</string>
+    <string name="save_button">Save</string>
+    <string name="delete_button">Delete</string>
+    <string name="balance_label">Balance: %s</string>s
+    <string name="expenses_button">Expenses</string>
+    <string name="income_button">Income</string>
+    <string name="savings_button">Savings</string>
+    <string name="recent_transactions_title">Recent Transactions</string>
+    <string name="welcome_title">Welcome to EXPENSIFY</string>
+    <string name="balance_title">Current Balance</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_transactions">Transactions</string>
+    <string name="nav_statistics">Statistics</string>
+    <string name="nav_settings">Settings</string>
 </resources>

@@ -6,4 +6,18 @@
         <item>Bank Transfers</item>
         <item>Cheque</item>
     </string-array>
+
+    <string-array name="category_types">
+        <item>Salary</item>
+        <item>Freelance</item>
+        <item>Investment</item>
+        <item>Gift</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="filter_options">
+        <item>All Transactions</item>
+        <item>Income</item>
+        <item>Expenses</item>
+    </string-array>
 </resources>

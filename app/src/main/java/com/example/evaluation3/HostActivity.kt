@@ -1,10 +1,7 @@
 package com.example.evaluation3
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.evaluation3.databinding.ActivityHostBinding
 
 class HostActivity : AppCompatActivity() {
@@ -29,13 +26,24 @@ class HostActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
-//                R.id.nav_transactions -> {
-//                    supportFragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, TransactionsFragment())
-//                        .commit()
-//                    true
-//                }
-                // Add other cases
+                R.id.nav_transactions -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, TransactionsFragment())
+                        .commit()
+                    true
+                }
+                R.id.nav_statistics -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, StatisticsFragment())
+                        .commit()
+                    true
+                }
+                R.id.nav_settings -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, SettingsFragment())
+                        .commit()
+                    true
+                }
                 else -> false
             }
         }

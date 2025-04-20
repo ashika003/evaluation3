@@ -11,40 +11,45 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="12dp">
 
         <!-- Date -->
         <TextView
-            android:id="@+id/transactionDate"
+            android:id="@+id/incomeDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:paddingEnd="8dp"/>
 
-        <!-- Category or Reason -->
+        <!-- Category -->
         <TextView
-            android:id="@+id/transactionCategoryOrReason"
+            android:id="@+id/incomeCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:textColor="@color/black"
-            android:textSize="14sp"/>
+            android:textSize="16sp"
+            android:paddingEnd="8dp"/>
 
         <!-- Amount -->
         <TextView
-            android:id="@+id/transactionAmount"
+            android:id="@+id/incomeAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"/>
+            android:layout_weight="1"
+            android:textColor="@color/income_green"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:gravity="end"/>
 
-        <!-- Description (for income) -->
+        <!-- Description (Hidden, for compatibility with adapter) -->
         <TextView
-            android:id="@+id/transactionDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="14sp"
+            android:id="@+id/incomeDescription"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:visibility="gone"/>
 
     </LinearLayout>

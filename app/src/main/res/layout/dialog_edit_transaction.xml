@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/dialogAmountInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/amount_hint"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/dialogCategoryOrReasonInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/category_or_reason_hint"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/dialogDateInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/date_hint"
+        android:inputType="none"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/dialogDescriptionInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/description_hint"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/dialogDeleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_button"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/dialogSaveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save_button" />
+    </LinearLayout>
+</LinearLayout>

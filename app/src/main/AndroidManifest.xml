@@ -11,18 +11,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Evaluation3">
         <activity
+            android:name=".TransactionsAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".ItemTransaction"
+            android:exported="false" />
+        <activity
+            android:name=".IncomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExpenseActivity"
             android:exported="false" />
         <activity
             android:name=".HostActivity"
             android:exported="false" />
-        <activity
-            android:name=".HostActivity"
-            android:exported="false"
-            tools:ignore="DuplicateActivity" />
-        <activity
-            android:name=".ItemTransaction"
-            android:exported="false" /> <!-- Remove Dashboard_Activity as it doesn't exist -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">

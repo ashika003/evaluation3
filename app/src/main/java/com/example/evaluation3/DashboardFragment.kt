@@ -1,22 +1,30 @@
 package com.example.evaluation3
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.evaluation3.databinding.FragmentDashboardBinding
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class DashboardFragment : Fragment() {
-    // ViewBinding
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
-
-    // Adapter
     private lateinit var transactionAdapter: TransactionAdapter
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private lateinit var expensePrefs: SharedPreferences
+    private lateinit var incomePrefs: SharedPreferences
+    private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+        refreshData()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,20 +37,30 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        expensePrefs = requireContext().getSharedPreferences("ExpensesPrefs", Context.MODE_PRIVATE)
+        incomePrefs = requireContext().getSharedPreferences("IncomePrefs", Context.MODE_PRIVATE)
         setupRecyclerView()
         setupButtonListeners()
+        updateBalance()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Register listener for real-time updates
+        expensePrefs.registerOnSharedPreferenceChangeListener(prefsListener)
+        incomePrefs.registerOnSharedPreferenceChangeListener(prefsListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Unregister listener to prevent leaks
+        expensePrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
+        incomePrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
     }
 
     private fun setupRecyclerView() {
-        // Sample data
-        val transactions = listOf(
-            Transaction("2025-04-18", "Grocery Shopping", "-$45.30", TransactionType.EXPENSE),
-            Transaction("2025-04-18", "Salary", "+$1,500.00", TransactionType.INCOME),
-            Transaction("2025-04-19", "Coffee", "-$5.20", TransactionType.EXPENSE),
-            Transaction("2025-04-20", "Freelance Payment", "+$300.00", TransactionType.INCOME)
-        )
-
-        transactionAdapter = TransactionAdapter(transactions)
+        val transactions = loadRecentTransactions()
+        transactionAdapter = TransactionAdapter(transactions) { /* No-op: Dashboard doesn't handle clicks */ }
         binding.transactionsRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = transactionAdapter
@@ -50,77 +68,191 @@ class DashboardFragment : Fragment() {
         }
     }
 
+    private fun loadRecentTransactions(): List<Transaction> {
+        val transactions = mutableListOf<Transaction>()
+        val threeDaysAgo = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -3)
+        }.time
+
+        // Load expenses
+        val savedExpenses = expensePrefs.getStringSet("expenses", mutableSetOf())?.toList() ?: listOf()
+        Log.d("DashboardFragment", "Recent expenses loaded: $savedExpenses")
+        for (expenseString in savedExpenses) {
+            val parts = expenseString.split("|")
+            if (parts.size == 3) {
+                val date = try {
+                    dateFormat.parse(parts[0])
+                } catch (e: Exception) {
+                    Log.e("DashboardFragment", "Invalid date format in expense: ${parts[0]}")
+                    null
+                }
+                if (date != null && date.after(threeDaysAgo)) {
+                    transactions.add(
+                        Transaction(
+                            type = TransactionType.EXPENSE,
+                            date = parts[0],
+                            categoryOrReason = parts[1],
+                            amount = parts[2],
+                            description = null
+                        )
+                    )
+                }
+            } else {
+                Log.e("DashboardFragment", "Invalid expense format: $expenseString")
+            }
+        }
+
+        // Load income
+        val savedIncomes = incomePrefs.getStringSet("incomes", mutableSetOf())?.toList() ?: listOf()
+        Log.d("DashboardFragment", "Recent incomes loaded: $savedIncomes")
+        for (incomeString in savedIncomes) {
+            val parts = incomeString.split("|")
+            if (parts.size == 4) {
+                val date = try {
+                    dateFormat.parse(parts[0])
+                } catch (e: Exception) {
+                    Log.e("DashboardFragment", "Invalid date format in income: ${parts[0]}")
+                    null
+                }
+                if (date != null && date.after(threeDaysAgo)) {
+                    transactions.add(
+                        Transaction(
+                            type = TransactionType.INCOME,
+                            date = parts[0],
+                            categoryOrReason = parts[1],
+                            amount = parts[2],
+                            description = parts[3]
+                        )
+                    )
+                }
+            } else {
+                Log.e("DashboardFragment", "Invalid income format: $incomeString")
+            }
+        }
+
+        // Sort by date (descending)
+        return transactions.sortedByDescending { dateFormat.parse(it.date) }
+    }
+
+    private fun loadAllTransactions(): List<Transaction> {
+        val transactions = mutableListOf<Transaction>()
+
+        // Load expenses
+        val savedExpenses = expensePrefs.getStringSet("expenses", mutableSetOf())?.toList() ?: listOf()
+        Log.d("DashboardFragment", "All expenses loaded: $savedExpenses")
+        for (expenseString in savedExpenses) {
+            val parts = expenseString.split("|")
+            if (parts.size == 3) {
+                val date = try {
+                    dateFormat.parse(parts[0])
+                } catch (e: Exception) {
+                    Log.e("DashboardFragment", "Invalid date format in expense: ${parts[0]}")
+                    null
+                }
+                if (date != null) {
+                    transactions.add(
+                        Transaction(
+                            type = TransactionType.EXPENSE,
+                            date = parts[0],
+                            categoryOrReason = parts[1],
+                            amount = parts[2],
+                            description = null
+                        )
+                    )
+                }
+            } else {
+                Log.e("DashboardFragment", "Invalid expense format: $expenseString")
+            }
+        }
+
+        // Load income
+        val savedIncomes = incomePrefs.getStringSet("incomes", mutableSetOf())?.toList() ?: listOf()
+        Log.d("DashboardFragment", "All incomes loaded: $savedIncomes")
+        for (incomeString in savedIncomes) {
+            val parts = incomeString.split("|")
+            if (parts.size == 4) {
+                val date = try {
+                    dateFormat.parse(parts[0])
+                } catch (e: Exception) {
+                    Log.e("DashboardFragment", "Invalid date format in income: ${parts[0]}")
+                    null
+                }
+                if (date != null) {
+                    transactions.add(
+                        Transaction(
+                            type = TransactionType.INCOME,
+                            date = parts[0],
+                            categoryOrReason = parts[1],
+                            amount = parts[2],
+                            description = parts[3]
+                        )
+                    )
+                }
+            } else {
+                Log.e("DashboardFragment", "Invalid income format: $incomeString")
+            }
+        }
+
+        // Sort by date (descending)
+        return transactions.sortedByDescending { dateFormat.parse(it.date) }
+    }
+
+    private fun calculateBalance(): Double {
+        val transactions = loadAllTransactions()
+        var balance = 0.0
+        for (transaction in transactions) {
+            try {
+                // Extract numeric value from amount (e.g., "+100.00 LKR" or "-50.00 LKR")
+                val amountStr = transaction.amount.replace("[^0-9.]".toRegex(), "")
+                val amount = amountStr.toDoubleOrNull() ?: 0.0
+                balance += if (transaction.type == TransactionType.INCOME) amount else -amount
+            } catch (e: Exception) {
+                Log.e("DashboardFragment", "Error parsing amount: ${transaction.amount}", e)
+            }
+        }
+        Log.d("DashboardFragment", "Calculated balance: $balance")
+        return balance
+    }
+
+    private fun updateBalance() {
+        val balance = calculateBalance()
+        binding.expenseTrackerAmount.text = String.format("%.2f LKR", balance)
+        binding.expenseTrackerAmount.setTextColor(
+            if (balance >= 0) android.graphics.Color.parseColor("#00FF00")
+            else android.graphics.Color.parseColor("#FF0000")
+        )
+        Log.d("DashboardFragment", "Balance updated: ${binding.expenseTrackerAmount.text}")
+    }
+
+    private fun refreshData() {
+        transactionAdapter.updateTransactions(loadRecentTransactions())
+        updateBalance()
+    }
+
     private fun setupButtonListeners() {
         binding.apply {
             expensesButton.setOnClickListener {
-                showToast("Expenses clicked")
+                android.widget.Toast.makeText(requireContext(), "Expenses clicked", android.widget.Toast.LENGTH_SHORT).show()
                 startActivity(Intent(requireContext(), ExpenseActivity::class.java))
             }
             incomeButton.setOnClickListener {
-                showToast("Income clicked")
+                android.widget.Toast.makeText(requireContext(), "Income clicked", android.widget.Toast.LENGTH_SHORT).show()
+                startActivity(Intent(requireContext(), IncomeActivity::class.java))
             }
             savingsButton.setOnClickListener {
-                showToast("Savings clicked")
+                android.widget.Toast.makeText(requireContext(), "Savings clicked", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    override fun onResume() {
+        super.onResume()
+        // Refresh transactions and balance when fragment is resumed
+        refreshData()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-}
-
-// Add these classes if they don't exist in your project:
-
-enum class TransactionType {
-    INCOME, EXPENSE
-}
-
-data class Transaction(
-    val date: String,
-    val description: String,
-    val amount: String,
-    val type: TransactionType
-)
-
-class TransactionAdapter(
-    private val transactions: List<Transaction>
-) : androidx.recyclerview.widget.RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
-
-    inner class TransactionViewHolder(itemView: View) :
-        androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        // Make sure these IDs match your item_transaction.xml
-        val dateText: android.widget.TextView = itemView.findViewById(R.id.date_text)
-        val descriptionText: android.widget.TextView = itemView.findViewById(R.id.description_text)
-        val amountText: android.widget.TextView = itemView.findViewById(R.id.amount_text)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.activity_item_transaction, parent, false)
-        return TransactionViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        val transaction = transactions[position]
-        holder.apply {
-            dateText.text = transaction.date
-            descriptionText.text = transaction.description
-            amountText.text = transaction.amount
-
-            // Set color based on transaction type
-            val color = when (transaction.type) {
-                TransactionType.INCOME -> android.graphics.Color.GREEN
-                TransactionType.EXPENSE -> android.graphics.Color.RED
-            }
-            amountText.setTextColor(color)
-        }
-    }
-
-    override fun getItemCount() = transactions.size
 }
