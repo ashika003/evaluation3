@@ -25,24 +25,22 @@ class MainActivity : AppCompatActivity() {
             val password = binding.passwordInput.text.toString().trim()
 
             if (username.isNotEmpty() && password.isNotEmpty()) {
-                // Retrieve stored credentials
                 val storedUsername = sharedPreferences.getString("username", "")
                 val storedPassword = sharedPreferences.getString("password", "")
 
-                // Validate credentials
                 if (username == storedUsername && password == storedPassword) {
-                    Toast.makeText(this, "Logging in as $username", Toast.LENGTH_SHORT).show()
-                    // Navigate to DashboardActivity
-                    val intent = Intent(this, DashboardActivity::class.java)
+                    // Start new HostActivity instead of showing fragment
+                    val intent = Intent(this, HostActivity::class.java)
                     startActivity(intent)
-                    finish() // Close MainActivity
+                    finish()
                 } else {
-                    Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             }
         }
+
 
         // Register button click
         binding.registerButton.setOnClickListener {

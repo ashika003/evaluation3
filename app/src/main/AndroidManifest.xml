@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.evaluation3">
 
     <application
@@ -10,9 +11,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Evaluation3">
         <activity
-            android:name=".ItemTransaction"
+            android:name=".ExpenseActivity"
             android:exported="false" />
-        <!-- Remove Dashboard_Activity as it doesn't exist -->
+        <activity
+            android:name=".HostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HostActivity"
+            android:exported="false"
+            tools:ignore="DuplicateActivity" />
+        <activity
+            android:name=".ItemTransaction"
+            android:exported="false" /> <!-- Remove Dashboard_Activity as it doesn't exist -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -24,10 +34,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true" /> <!-- Changed to true for login entry point -->
-        <activity
-            android:name=".DashboardActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />

@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="dark_blue">#1E3A8A</color>
     <color name="light_blue">#60A5FA</color>
+    <color name="expenses_red">#FF0000</color>
 </resources>

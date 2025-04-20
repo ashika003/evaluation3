@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#1E3A8A">
+
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:contentDescription="Back"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:padding="8dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        app:tint="#FFFFFF" />
+
+    <!-- Greeting -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Expenses!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="16dp"
+        android:layout_below="@id/backButton"/>
+
+    <!-- Card View for Input Fields -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_below="@id/backButton"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#BFDBFE"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Amount -->
+            <EditText
+                android:id="@+id/amountInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Amount (LKR)"
+                android:inputType="numberDecimal"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="#000000"
+                android:textColorHint="#666666"/>
+
+            <!-- Payment Type Dropdown -->
+            <Spinner
+                android:id="@+id/paymentTypeSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:entries="@array/payment_types"
+                android:backgroundTint="#FFFFFF"
+                android:spinnerMode="dropdown"/>
+
+            <!-- Date Picker -->
+            <EditText
+                android:id="@+id/dateInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:focusable="false"
+                android:hint="Date"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="#000000"
+                android:textColorHint="#666666"/>
+
+            <!-- Reason -->
+            <EditText
+                android:id="@+id/reasonInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Reason"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="#000000"
+                android:textColorHint="#666666"/>
+
+            <!-- Description -->
+            <EditText
+                android:id="@+id/descriptionInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Description"
+                android:minLines="3"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="#000000"
+                android:textColorHint="#666666"/>
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/submitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Submit"
+                android:backgroundTint="#1E3A8A"
+                android:textColor="#FFFFFF"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Recent Expenses -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recent Expenses (Last 3 Days)"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center"
+        android:paddingBottom="8dp"
+        android:paddingTop="16dp"
+        android:layout_below="@id/backButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="400dp"/>
+
+    <!-- Recent Expenses List -->
+    <ListView
+        android:id="@+id/recentExpensesList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/backButton"
+        android:layout_marginTop="440dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="12dp"
+        android:background="#1E3A8A"
+        android:padding="8dp"/>
+
+</RelativeLayout>
