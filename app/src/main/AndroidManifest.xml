@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Evaluation3">
         <activity
-            android:name=".TransactionsAdapter"
+            android:name=".CurrencyUtils"
             android:exported="false" />
         <activity
             android:name=".ItemTransaction"

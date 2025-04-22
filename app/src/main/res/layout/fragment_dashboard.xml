@@ -56,7 +56,7 @@
                 android:id="@+id/expense_tracker_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.00 LKR"
+                android:text="0.00"
                 android:textSize="24sp"
                 android:textColor="#00FF00"
                 android:layout_marginTop="8dp" />
@@ -109,16 +109,6 @@
                 app:rippleColor="#60A5FA"
                 android:layout_marginBottom="8dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/savings_button"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="@string/savings_button"
-                android:textSize="16sp"
-                android:textColor="#000000"
-                android:backgroundTint="#FFFFFF"
-                app:cornerRadius="8dp"
-                app:rippleColor="#60A5FA" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

@@ -24,4 +24,21 @@
     <string name="nav_transactions">Transactions</string>
     <string name="nav_statistics">Statistics</string>
     <string name="nav_settings">Settings</string>
+    <string name="settings_title">Settings</string>
+    <string name="switch_to_dark_theme">Switch to Dark Theme</string>
+    <string name="switch_to_light_theme">Switch to Light Theme</string>
+    <string name="change_currency">Change Currency</string>
+    <string name="select_currency">Select Currency</string>
+    <string name="clear_transactions">Clear All Transactions</string>
+    <string name="clear_transactions_confirm">Are you sure you want to clear all transactions? This action cannot be undone.</string>
+    <string name="transactions_cleared">All transactions cleared</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="password_empty">Password cannot be empty</string>
+    <string name="password_mismatch">Passwords do not match</string>
+    <string name="password_updated">Password updated successfully</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="save">Save</string>
 </resources>

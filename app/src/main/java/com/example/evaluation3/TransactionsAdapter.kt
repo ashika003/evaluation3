@@ -1,5 +1,6 @@
 package com.example.evaluation3
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,10 +32,14 @@ class TransactionAdapter(
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         val transaction = transactions[position]
+        val context = holder.itemView.context
+        val prefs = context.getSharedPreferences("SettingsPrefs", Context.MODE_PRIVATE)
+        val currency = prefs.getString("currency", "LKR") ?: "LKR"
+
         holder.apply {
             dateText.text = transaction.date
             categoryOrReasonText.text = transaction.categoryOrReason
-            amountText.text = transaction.amount
+            amountText.text = formatAmount(transaction.amount, currency)
             descriptionText.text = transaction.description ?: ""
             descriptionText.visibility = if (transaction.description.isNullOrEmpty()) View.GONE else View.VISIBLE
 
@@ -44,6 +49,21 @@ class TransactionAdapter(
                 TransactionType.EXPENSE -> android.graphics.Color.parseColor("#FF0000")
             }
             amountText.setTextColor(color)
+        }
+    }
+
+    private fun formatAmount(amount: String, currency: String): String {
+        val amountValue = amount.replace("[^0-9.]".toRegex(), "").toDoubleOrNull() ?: 0.0
+        // Static conversion rates for simplicity
+        val convertedAmount = when (currency) {
+            "USD" -> amountValue / 300.0 // Example: 1 LKR = 0.0033 USD
+            "EUR" -> amountValue / 360.0 // Example: 1 LKR = 0.0028 EUR
+            else -> amountValue // LKR
+        }
+        return when (currency) {
+            "USD" -> String.format("$%.2f", convertedAmount)
+            "EUR" -> String.format("€%.2f", convertedAmount)
+            else -> String.format("%s%.2f LKR", if (amount.startsWith("+")) "+" else "-", convertedAmount)
         }
     }
 

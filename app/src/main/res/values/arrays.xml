@@ -20,4 +20,10 @@
         <item>Income</item>
         <item>Expenses</item>
     </string-array>
+
+    <string-array name="currency_options">
+        <item>LKR</item>
+        <item>USD</item>
+        <item>EUR</item>
+    </string-array>
 </resources>

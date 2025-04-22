@@ -22,8 +22,12 @@ class DashboardFragment : Fragment() {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private lateinit var expensePrefs: SharedPreferences
     private lateinit var incomePrefs: SharedPreferences
-    private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-        refreshData()
+    private lateinit var settingsPrefs: SharedPreferences
+    private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+        if (key == "currency") {
+            Log.d("DashboardFragment", "Currency changed, refreshing data")
+            refreshData()
+        }
     }
 
     override fun onCreateView(
@@ -39,23 +43,24 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         expensePrefs = requireContext().getSharedPreferences("ExpensesPrefs", Context.MODE_PRIVATE)
         incomePrefs = requireContext().getSharedPreferences("IncomePrefs", Context.MODE_PRIVATE)
+        settingsPrefs = requireContext().getSharedPreferences("SettingsPrefs", Context.MODE_PRIVATE)
         setupRecyclerView()
         setupButtonListeners()
-        updateBalance()
+        refreshData()
     }
 
     override fun onStart() {
         super.onStart()
-        // Register listener for real-time updates
         expensePrefs.registerOnSharedPreferenceChangeListener(prefsListener)
         incomePrefs.registerOnSharedPreferenceChangeListener(prefsListener)
+        settingsPrefs.registerOnSharedPreferenceChangeListener(prefsListener)
     }
 
     override fun onStop() {
         super.onStop()
-        // Unregister listener to prevent leaks
         expensePrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
         incomePrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
+        settingsPrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
     }
 
     private fun setupRecyclerView() {
@@ -202,7 +207,6 @@ class DashboardFragment : Fragment() {
         var balance = 0.0
         for (transaction in transactions) {
             try {
-                // Extract numeric value from amount (e.g., "+100.00 LKR" or "-50.00 LKR")
                 val amountStr = transaction.amount.replace("[^0-9.]".toRegex(), "")
                 val amount = amountStr.toDoubleOrNull() ?: 0.0
                 balance += if (transaction.type == TransactionType.INCOME) amount else -amount
@@ -210,18 +214,31 @@ class DashboardFragment : Fragment() {
                 Log.e("DashboardFragment", "Error parsing amount: ${transaction.amount}", e)
             }
         }
-        Log.d("DashboardFragment", "Calculated balance: $balance")
+        Log.d("DashboardFragment", "Calculated balance (LKR): $balance")
         return balance
     }
 
     private fun updateBalance() {
         val balance = calculateBalance()
-        binding.expenseTrackerAmount.text = String.format("%.2f LKR", balance)
+        val currency = settingsPrefs.getString("currency", "LKR") ?: "LKR"
+        // Convert balance based on currency
+        val convertedBalance = when (currency) {
+            "USD" -> balance / 300.0 // Example: 1 LKR = 0.0033 USD
+            "EUR" -> balance / 360.0 // Example: 1 LKR = 0.0028 EUR
+            else -> balance // LKR
+        }
+        // Format balance with currency symbol
+        val formattedBalance = when (currency) {
+            "USD" -> String.format("$%.2f", convertedBalance)
+            "EUR" -> String.format("€%.2f", convertedBalance)
+            else -> String.format("%.2f LKR", convertedBalance)
+        }
+        binding.expenseTrackerAmount.text = formattedBalance
         binding.expenseTrackerAmount.setTextColor(
             if (balance >= 0) android.graphics.Color.parseColor("#00FF00")
             else android.graphics.Color.parseColor("#FF0000")
         )
-        Log.d("DashboardFragment", "Balance updated: ${binding.expenseTrackerAmount.text}")
+        Log.d("DashboardFragment", "Balance: $balance (LKR) -> $convertedBalance ($currency) -> $formattedBalance")
     }
 
     private fun refreshData() {
@@ -239,15 +256,11 @@ class DashboardFragment : Fragment() {
                 android.widget.Toast.makeText(requireContext(), "Income clicked", android.widget.Toast.LENGTH_SHORT).show()
                 startActivity(Intent(requireContext(), IncomeActivity::class.java))
             }
-            savingsButton.setOnClickListener {
-                android.widget.Toast.makeText(requireContext(), "Savings clicked", android.widget.Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        // Refresh transactions and balance when fragment is resumed
         refreshData()
     }
 
