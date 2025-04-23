@@ -11,6 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Evaluation3">
         <activity
+            android:name=".CustomBarChart"
+            android:exported="false" />
+        <activity
+            android:name=".CustomPieChart"
+            android:exported="false" />
+        <activity
+            android:name=".FragmentStatisticsBinding"
+            android:exported="false" />
+        <activity
             android:name=".CurrencyUtils"
             android:exported="false" />
         <activity
