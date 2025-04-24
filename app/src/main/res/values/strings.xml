@@ -8,7 +8,7 @@
     <string name="date_hint">Date</string>
     <string name="description_hint">Description</string>
     <string name="submit_button">Submit</string>
-    <string name="recent_income_title">Recent Income (Last 3 Days)</string>
+    <string name="recent_income_title">Recent Income</string>
     <string name="transactions_title">All Transactions</string>
     <string name="category_or_reason_hint">Category or Reason</string>
     <string name="save_button">Save</string>
